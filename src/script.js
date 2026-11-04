@@ -18,7 +18,7 @@ function creerLigne(eleve){
     const label = document.createElement("label")
     const input = document.createElement("input") 
     const buttonadd = document.createElement("button") 
-
+    const p = document.createElement("p")
 
     li.dataset.id = eleve.id
     buttonSpam.type = "button"
@@ -41,6 +41,7 @@ function creerLigne(eleve){
     spanMoyenne.className = "font-serif text-xl"
     div2.className = "flex gap-2"
     buttonAbsence.className = "btn-absent h-11 rounded-full border border-line px-3 sm:px-4 text-sm font-medium hover:bg-paper"
+    p.className = "message mt-2 text-xs text-alert"
     label.classList.add("flex-1")
     
     input.className = "h-11 w-full rounded-full border border-line bg-paper px-4 text-sm lg:w-24"
@@ -53,8 +54,16 @@ function creerLigne(eleve){
     }else{
         moyenne = "—";
     }
+   
     
+    if(eleve.absences >= 3){
+        li.classList.add ("alerte")
+        spanshortname.classList.remove ("bg-brand-soft" ,"text-white")
+        spanshortname.classList.add ("bg-alert" ,"text-white")
+    }
     
+
+
     const abrname = eleve.prenom[0] + eleve.nom[0]
     spanshortname.textContent = abrname
 
@@ -89,11 +98,41 @@ function creerLigne(eleve){
 
 const ele = eleves.map(creerLigne)
 ele.forEach(i => listeEleves.append(i))
-
 compteur.textContent = `${eleves.length} élèves`
 
 
 
+
+
+const group1 = document.createElement("option")
+const group2 = document.createElement("option")
+const group3 = document.createElement("option")
+group1.textContent = "group1"
+group2.textContent = "group2"
+group3.textContent = "group3"
+group1.value = 1
+group2.value = 2
+group3.value = 3
+
+const select = document.querySelector("#filtre-groupe")
+select.append(group1,group2,group3)
+const recherche = document.querySelector("#recherche")
+
+function searchandfilter () {
+    listeEleves.textContent = ""
+
+    const elevesFiltred = select.value === "" ? eleves : eleves.filter(eleve => String(eleve.groupeId) === select.value)
+
+    const search = recherche.value === "" ? elevesFiltred :  elevesFiltred.filter(eleve =>`${eleve.nom} ${eleve.prenom}`.toLowerCase().includes(recherche.value.toLowerCase()))
+    
+    const searched = search.map(creerLigne)
+    
+    searched.forEach(ligne => listeEleves.append(ligne))
+    compteur.textContent = `${search.length} élèves`
+}
+
+select.addEventListener("change", searchandfilter)
+recherche.addEventListener("input", searchandfilter)
 
 
 
