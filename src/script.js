@@ -13,12 +13,15 @@ function creerLigne(eleve){
     const spanNom = document.createElement("span")
     const spanAbsence = document.createElement("span")
     const spanMoyenne = document.createElement("span")
+    spanMoyenne.id ="moyenne"
+    const badgeParents = document.createElement("span")
     const div2 = document.createElement("div")
     const buttonAbsence = document.createElement("button")
     const label = document.createElement("label")
     const input = document.createElement("input") 
     const buttonadd = document.createElement("button") 
     const p = document.createElement("p")
+    p.id = "error-note"
 
     li.dataset.id = eleve.id
     buttonSpam.type = "button"
@@ -38,12 +41,18 @@ function creerLigne(eleve){
     spanshortname.className="grid size-10 shrink-0 place-items-center rounded-full bg-brand-soft text-sm font-semibold text-brand"
     spanNom.className = "block truncate font-medium"
     spanAbsence.className = "block text-sm text-muted"
+    spanAbsence.dataset.role = "absences"
+    spanshortname.dataset.role = "initials"
+    badgeParents.className = "hidden badge ml-1 whitespace-nowrap rounded-full bg-alert px-2 py-0.5 text-xs font-medium text-white"
+    badgeParents.dataset.role = "badge-parents"
+    badgeParents.textContent = "Prévenir les parents"
     spanMoyenne.className = "font-serif text-xl"
     div2.className = "flex gap-2"
     buttonAbsence.className = "btn-absent h-11 rounded-full border border-line px-3 sm:px-4 text-sm font-medium hover:bg-paper"
-    p.className = "message mt-2 text-xs text-alert"
+    p.className = "message mt-2 text-xs text-alert hidden"
     label.classList.add("flex-1")
-    
+    p.textContent ="note doit être un nombre entre 0 et 20."
+
     input.className = "h-11 w-full rounded-full border border-line bg-paper px-4 text-sm lg:w-24"
     buttonadd.className = "btn-note h-11 rounded-full bg-ink px-3 sm:px-4 text-sm font-medium text-white hover:bg-brand"
     let moyenne;
@@ -55,11 +64,11 @@ function creerLigne(eleve){
         moyenne = "—";
     }
    
-    
     if(eleve.absences >= 3){
         li.classList.add ("alerte")
-        spanshortname.classList.remove ("bg-brand-soft" ,"text-white")
+        spanshortname.classList.remove ("bg-brand-soft" ,"text-brand")
         spanshortname.classList.add ("bg-alert" ,"text-white")
+        badgeParents.classList.remove("hidden")
     }
     
 
@@ -78,6 +87,7 @@ function creerLigne(eleve){
 
     spanAbsence.textContent = `${eleve.absences} absence${eleve.absences === 1 ? "" : "s"}`
     spanholder.append(spanAbsence)
+    spanholder.append(badgeParents)
     buttonSpam.append(spanholder)
     
     spanMoyenne.textContent = `${moyenne}`
@@ -85,6 +95,7 @@ function creerLigne(eleve){
 
     div1.append(buttonSpam);
     li.append(div1)
+    li.append(p)
 
     buttonAbsence.textContent = "Absence"
     
@@ -92,7 +103,7 @@ function creerLigne(eleve){
     label.append(input)
     div2.append(buttonAbsence, label ,buttonadd)
     div1.append(div2)
-    
+    li.append(p)
     return (li)
 }
 
@@ -133,6 +144,75 @@ function searchandfilter () {
 
 select.addEventListener("change", searchandfilter)
 recherche.addEventListener("input", searchandfilter)
+
+/////////////
+
+listeEleves.addEventListener("click", event => {
+    const button = event.target.closest(".btn-absent")
+    if (!button) return
+
+    const row = button.closest("li[data-id]")
+    if (!row) return
+
+    const studentId = Number(row.dataset.id)
+    const student = eleves.find(eleve => eleve.id === studentId)
+    if (!student) return
+
+    student.absences += 1
+    row.querySelector('[data-role="absences"]').textContent =`${student.absences} absences`
+
+    if (student.absences >= 3) {
+        row.classList.add("alerte")
+        const initials = row.querySelector('[data-role="initials"]')
+        initials.classList.remove("bg-brand-soft", "text-brand")
+        initials.classList.add("bg-alert", "text-white")
+        row.querySelector('[data-role="badge-parents"]').classList.remove("hidden")
+    }
+})
+
+
+//////////////////////////////////
+
+listeEleves.addEventListener("click", event => {
+    const addbutton = event.target.closest(".btn-note")
+    if(!addbutton)return
+
+    const row = addbutton.closest("li[data-id]")
+    if (!row) return
+    const input = row.querySelector('input[type="number"]')
+    
+    const studentId = Number(row.dataset.id)
+    const selectedstudent = eleves.find(eleve => studentId === eleve.id)
+    if(!selectedstudent)return
+
+    const spanMoyenne = row.querySelector("#moyenne")  
+    const error = document.querySelector("#error-note")
+
+    if(input.value <= 20 && input.value >= 0 ){
+        selectedstudent.notes.push(Number(input.value))
+        error.classList.add("hidden")
+    }else{
+        error.classList.remove("hidden")
+    }
+
+
+    let moyenne;
+    if(selectedstudent.notes.length > 0){
+        const sum = selectedstudent.notes.reduce((total, note) => total + note, 0)
+        moyenne = (sum / selectedstudent.notes.length).toFixed(2)
+        moyenne += " / 20"
+    }else{
+        moyenne = "—";
+    }
+        spanMoyenne.textContent = `${moyenne}`
+})
+
+
+
+
+
+
+
 
 
 
