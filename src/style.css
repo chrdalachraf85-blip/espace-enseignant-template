@@ -1,6 +1,5 @@
-@import "tailwindcss";
- /* ---------- 1. Charte graphique ---------- */
-    @theme {
+/* ---------- Charte graphique ---------- */
+:root {
       --font-sans: "Inter", system-ui, sans-serif;
       --font-serif: "Newsreader", Georgia, serif;
 
@@ -14,7 +13,7 @@
       --color-alert: #b4472e;       /* erreur / alerte     */
       --color-alert-soft: #fbece6;
       --color-ok: #2f7d4f;          /* succès              */
-    }
+}
 
     /* ---------- 2. États ajoutés / retirés par JavaScript (classList) ---------- */
     .erreur input   { border-color: var(--color-alert); }
