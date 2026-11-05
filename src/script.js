@@ -3,7 +3,6 @@ import { groupes, eleves } from "./data.js"
 const listeEleves = document.querySelector("#liste-eleves")
 const compteur = document.querySelector("#compteur")
 
-
 function creerLigne(eleve){
     const li = document.createElement("li")
     const div1 = document.createElement("div")
@@ -118,15 +117,15 @@ compteur.textContent = `${eleves.length} élèves`
 const group1 = document.createElement("option")
 const group2 = document.createElement("option")
 const group3 = document.createElement("option")
-group1.textContent = "group1"
-group2.textContent = "group2"
-group3.textContent = "group3"
+group1.textContent = "Groupe 1"
+group2.textContent = "Groupe 2"
+group3.textContent = "Groupe 3"
 group1.value = 1
 group2.value = 2
 group3.value = 3
 
 const select = document.querySelector("#filtre-groupe")
-select.append(group1,group2,group3)
+select.append(group1.cloneNode(true), group2.cloneNode(true), group3.cloneNode(true))
 const recherche = document.querySelector("#recherche")
 
 function searchandfilter () {
@@ -208,22 +207,155 @@ listeEleves.addEventListener("click", event => {
 })
 
 
+////////////////
 
 
+const form = document.querySelector("#form-eleve")
+const prenom = form.querySelector("#prenom")
+const prenomMsg = form.querySelector("#prenom-msg")
+const nom = form.querySelector("#nom")
+const nomMsg = form.querySelector("#nom-msg")
+const groupe = form.querySelector("#groupe")
+const groupeMsg = form.querySelector("#groupe-msg")
+const email = form.querySelector("#email")
+const emailMsg = form.querySelector("#email-msg")
+const telephone = form.querySelector("#telephone")
+const telephoneMsg = form.querySelector("#telephone-msg")
+const code = form.querySelector("#code")
+const codeForce = form.querySelector("#code-force")
+const codeMsg = form.querySelector("#code-msg")
+const formSucces = form.querySelector("#form-succes")
+const formErreur = form.querySelector("#form-erreur")
 
 
+///////////////////////////////////////////////////////////////////////////////
+const nomRegex = /^(?=.{2,}$)[\p{L} -]+$/u
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const telephoneRegex = /^(?:0[67]\d{8}|\+212[ -]?[67]\d{8})$/
+const codeRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
+//////////////////////////////////////////
 
+groupe.append(group1, group2, group3)
 
+const prenominput = prenom.value
+const nominput = nom.value
+const groupeinput = groupe.value
+const emailinput = email.value
+const telephoneinput = telephone.value
+const codeinput = code.value
+//////////////////////////////////
 
+const fields = [
+    {
+        input: prenom,
+        regex: nomRegex,
+        errorMessage: "Lettres, espaces ou tirets (2 caractères minimum)."
+    },
+    {
+        input: nom,
+        regex: nomRegex,
+        errorMessage: "Lettres, espaces ou tirets (2 caractères minimum)."
+    },
+    {
+        input: groupe,
+        errorMessage: "Choisissez un groupe."
+    },
+    {
+        input: email,
+        regex: emailRegex,
+        errorMessage: "Exemple : parent@mail.ma"
+    },
+    {
+        input: telephone,
+        regex: telephoneRegex,
+        errorMessage: "06 / 07 ou +212 6 / 7, puis 8 chiffres."
+    },
+    {
+        input: code,
+        regex: codeRegex,
+        errorMessage: "8 caractères min., 1 majuscule, 1 chiffre, 1 caractère spécial."
+    }
+]
 
+function validateField(field) {
+    const valeur = field.input.value.trim()
+    const valide = field.regex ? field.regex.test(valeur) : valeur !== ""
+    const boite = field.input.closest(".champ")
+    const message = boite.querySelector(".message")
 
+    boite.classList.remove("valide", "erreur")
+    boite.classList.add(valide ? "valide" : "erreur")
+    message.classList.remove("hidden")
+    message.textContent = valide ? "Valide." : field.errorMessage
+    return valide
+}
 
+//////////////////////////////////////
 
+fields.forEach(field => {
+    field.input.addEventListener("input", () => {
+        validateField(field)
+        formSucces.hidden = true
+        formErreur.hidden = true
+    })
+    field.input.addEventListener("change", () => validateField(field))
+})
+////////////////////////////////////////////
+form.addEventListener("submit", event => {
+    event.preventDefault()
+    formSucces.hidden = true
+    formErreur.hidden = true
 
+    const fieldsValid = fields.map(validateField)
+    const firstInvalid = fieldsValid.indexOf(false)
+    if (fieldsValid.every(valide => valide === true) === false) {
+        fields[firstInvalid].input.focus()
+        return
+    }
+/////////
+    const groupeId = Number(groupe.value)
+    const doublon = eleves.some(eleve =>
+        eleve.groupeId === groupeId &&
+        eleve.prenom.toLowerCase() === prenom.value.trim().toLowerCase() && eleve.nom.toLowerCase() === nom.value.trim().toLowerCase()
+    )
 
+    if (doublon) {
+        formErreur.textContent = "Cet élève existe déjà dans ce groupe."
+        formErreur.hidden = false
+        groupe.focus()
+        return
+    }
 
+    const nombreEleves = eleves.filter(eleve => eleve.groupeId === groupeId).length
+    if (nombreEleves >= 15) {
+        formErreur.textContent = "Ce groupe est complet (15 élèves)."
+        formErreur.hidden = false
+        groupe.focus()
+        return
+    }
 
+    const nouvelEleve = {
+        id: Math.max(...eleves.map(eleve => eleve.id)) + 1,
+        prenom: prenom.value.trim(),
+        nom: nom.value.trim(),
+        groupeId,
+        emailParent: email.value.trim(),
+        telephoneParent: telephone.value.trim(),
+        absences: 0,
+        notes: []
+    }
 
+    eleves.push(nouvelEleve)
+    searchandfilter()
+    form.reset()
+    fields.forEach(field => {
+        field.input.closest(".champ").classList.remove("valide", "erreur")
+        field.message.classList.add("hidden")
+        field.message.textContent = field.errorMessage
+    })
+    codeForce.value = 0
+    formSucces.hidden = false
+})
 
 
 
