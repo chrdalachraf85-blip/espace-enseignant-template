@@ -9,25 +9,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --font-sans: "Inter", system-ui, sans-serif;
+      --font-serif: "Newsreader", Georgia, serif;
+      --color-paper: #f7f5f0;
+      --color-card: #ffffff;
+      --color-line: #e4e0d6;
+      --color-ink: #1f1e1b;
+      --color-muted: #6b6860;
+      --color-brand: #1f6f5c;
+      --color-brand-soft: #e3efe9;
+      --color-alert: #b4472e;
+      --color-alert-soft: #fbece6;
+      --color-ok: #2f7d4f;
+    }
+  </style>
   <link rel="stylesheet" href="src/style.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            paper: '#f7f5f0', card: '#ffffff', line: '#e4e0d6', ink: '#1f1e1b',
-            muted: '#6b6860', brand: '#1f6f5c', 'brand-soft': '#e3efe9',
-            alert: '#b4472e', 'alert-soft': '#fbece6', ok: '#2f7d4f'
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-            serif: ['Newsreader', 'Georgia', 'serif']
-          }
-        }
-      }
-    };
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
  
 
 
