@@ -93,18 +93,18 @@
           </summary>
 
           <form id="form-eleve" novalidate class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
-            <div class="champ valide">
+            <div class="champ ">
               <label for="prenom" class="text-sm font-medium">Prénom</label>
               <input id="prenom" name="prenom" type="text" autocomplete="off" aria-describedby="prenom-msg"
                      class="mt-1 h-11 w-full rounded-xl border border-line bg-paper px-3 outline-none focus:border-brand">
               <p id="prenom-msg" class="message mt-1 text-xs text-muted hidden">Prénom valide.</p>
             </div>
 
-            <div class="champ erreur">
+            <div class="champ ">
               <label for="nom" class="text-sm font-medium">Nom</label>
               <input id="nom" name="nom" type="text" autocomplete="off" aria-describedby="nom-msg"
                      class="mt-1 h-11 w-full rounded-xl border border-line bg-paper px-3 outline-none focus:border-brand">
-              <p id="nom-msg" class="message mt-1 text-xs text-muted">2 caractères minimum : lettres, espaces ou tirets.</p>
+              <p id="nom-msg" class="message mt-1 text-xs text-muted hidden" >2 caractères minimum : lettres, espaces ou tirets.</p>
             </div>
 
             <div class="champ">
@@ -176,11 +176,11 @@
       <dl class="mt-3 grid grid-cols-3 gap-2">
         <div class="rounded-2xl bg-card p-3 ring-1 ring-line">
           <dt class="text-xs text-muted">Moyenne</dt>
-          <dd id="bilan-moyenne" class="font-serif text-2xl">12,8</dd>
+          <dd id="bilan-moyenne" class="font-serif text-2xl">14</dd>
         </div>
         <div class="rounded-2xl bg-card p-3 ring-1 ring-line">
           <dt class="text-xs text-muted">Absences</dt>
-          <dd id="bilan-absences" class="font-serif text-2xl">17</dd>
+          <dd id="bilan-absences" class="font-serif text-2xl">30</dd>
         </div>
         <div class="rounded-2xl bg-alert-soft p-3 ring-1 ring-alert/30">
           <dt class="text-xs text-alert">Alertes</dt>
@@ -202,8 +202,7 @@
 
       <ul id="liste-parents" class="mt-3 grid gap-2 text-sm">
         <!-- EXEMPLES  -->
-        <li class="rounded-xl bg-card px-3 py-2 ring-1 ring-line">Imane Berrada — 0612345678</li>
-        <li class="rounded-xl bg-card px-3 py-2 ring-1 ring-line">Omar Fassi — 0698765432</li>
+       
       </ul>
 
       <!-- Aucun élève en alerte » -->
