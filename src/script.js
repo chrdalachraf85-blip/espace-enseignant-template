@@ -20,6 +20,13 @@ function creerLigne(eleve){
     const input = document.createElement("input") 
     const buttonadd = document.createElement("button") 
     const p = document.createElement("p")
+    
+
+
+
+
+
+
     p.id = "error-note"
 
     li.dataset.id = eleve.id
@@ -27,6 +34,7 @@ function creerLigne(eleve){
     buttonadd.type= "button"
     buttonadd.textContent = "Ajouter la note"
     buttonAbsence.type = "button"
+    buttonAbsence.className = "addabcence"
     input.type = "number"
     input.placeholder = "Note"
     input.min = 0
@@ -158,6 +166,9 @@ listeEleves.addEventListener("click", event => {
     if (!student) return
 
     student.absences += 1
+    calculateaside(eleves)
+    calculalertes(eleves)
+    loadalert()
     row.querySelector('[data-role="absences"]').textContent =`${student.absences} absences`
 
     if (student.absences >= 3) {
@@ -190,6 +201,7 @@ listeEleves.addEventListener("click", event => {
     if(input.value <= 20 && input.value >= 0 ){
         selectedstudent.notes.push(Number(input.value))
         error.classList.add("hidden")
+        calculateMoyenne(eleves)
     }else{
         error.classList.remove("hidden")
     }
@@ -203,6 +215,7 @@ listeEleves.addEventListener("click", event => {
     }else{
         moyenne = "—";
     }
+
         spanMoyenne.textContent = `${moyenne}`
 })
 
@@ -359,11 +372,56 @@ form.addEventListener("submit", event => {
 
 
 
+const moyenne = document.querySelector("#bilan-moyenne")
+const abcence = document.querySelector("#bilan-absences")
+const alertes = document.querySelector("#bilan-alertes")
+const addabsbtn = document.querySelector(".addabcence")
+
+function calculateMoyenne(eleves){
+    let total = 0
+    let nombreNotes = 0
+
+    eleves.forEach(eleve => { eleve.notes.forEach(note => { total += note , nombreNotes += 1})})
+
+    moyenne.textContent = nombreNotes === 0 ? "—" : `${(total / nombreNotes).toFixed(2)}    `
+}
+
+function calculateaside(eleve){
+    const abcences = eleve.reduce((result , abcense) => result + abcense.absences , 0)
+    abcence.textContent = abcences
+    
+}
+
+function calculalertes(eleves){
+    const alerts = eleves.filter(eleve => eleve.absences >= 3)
+    alertes.textContent = alerts.length
+}
+calculalertes(eleves)
+
+const listparent = document.querySelector("#liste-parents")
+function creerparentalerte(eleve){
+    const li = document.createElement("li")
+    li.className = "rounded-xl bg-card px-3 py-2 ring-1 ring-line"
+    li.textContent = `${eleve.prenom} -- ${eleve.telephoneParent}`
+    return li
+}
+function loadalert (){
+    listparent.textContent = ""
+    const alerted = eleves.filter(eleve => eleve.absences >= 3)
+    const create = alerted.map(creerparentalerte)
+    create.forEach(i => listparent.append(i))
+}
+loadalert()
+
+//const ele = eleves.map(creerLigne)
+//ele.forEach(i => listeEleves.append(i))
+//compteur.textContent = `${eleves.length} élèves`
 
 
 
 
-
-
-
-
+//<li class="rounded-xl bg-card px-3 py-2 ring-1 ring-line">Imane Berrada — 0612345678</li>
+//<ul id="liste-parents" class="mt-3 grid gap-2 text-sm">
+//    <li class="rounded-xl bg-card px-3 py-2 ring-1 ring-line">Imane Berrada — 0612345678</li>
+//    <li class="rounded-xl bg-card px-3 py-2 ring-1 ring-line">Omar Fassi — 0698765432</li>
+//</ul>
